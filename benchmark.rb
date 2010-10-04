@@ -52,6 +52,7 @@ class Benchmark
   end
 
   def to_s
+    puts "timestamp duration trace"
     @time_logger.to_s
   end
 end
