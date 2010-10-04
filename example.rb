@@ -17,7 +17,7 @@ end
 
 b = Benchmark.instance(:general)
 b.for(A)
-#Benchmark.instance(:general).for(Integer, :upto)
+Benchmark.instance(:general).for(Integer, :upto)
 
 a = A.new
 a.sum(5)

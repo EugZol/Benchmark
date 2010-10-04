@@ -13,6 +13,7 @@ class Benchmark
 
   def for_method(klass, method)
     method = method.to_s
+
     klass.class_variable_set(:@@_time_logger, @time_logger)
     method_with_benchmark = %Q{
       def #{method + '_with_benchmark'}(*args, &blk)
@@ -24,8 +25,8 @@ class Benchmark
         r
       end
     }
-    #puts "Achtung! Here is method:\n" << method_with_benchmark
     klass.class_eval method_with_benchmark
+    
     klass.send(:alias_method, method + '_without_benchmark', method)
     klass.send(:alias_method, method, method + '_with_benchmark')
   end

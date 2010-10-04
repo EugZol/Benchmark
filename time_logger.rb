@@ -25,7 +25,7 @@ class TimeLogger
     for i in (0..@events.length-1)
       duration = ((@events[i][3]-@events[i][1]) * 1000 ).to_i
       timestamp = @events[i][1] - @start
-      r << "  " * @events[i][2] << "#{"%.3f" % timestamp} #{"%03i" % duration} #{@events[i][0]}\n"
+      r  << "#{"%.3f" % timestamp} #{"%03i" % duration} #{"  " * @events[i][2]}#{@events[i][0]}\n"
     end
     r
   end

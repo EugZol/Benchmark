@@ -83,7 +83,7 @@ describe TimeLogger do
       t.stop_event(e2)
       t.stop_event(e1)
 
-      t.to_s.should == "0.000 003 first\n  0.001 001 second\n"
+      t.to_s.should == "0.000 003 first\n0.001 001   second\n"
     end
   end
 
