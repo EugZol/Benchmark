@@ -18,9 +18,19 @@ describe Benchmark do
         :test
       end
     end
+
+    class C
+      def inspect
+        "#<C:0x1337>"
+      end
+
+      def test(*args)
+      end
+    end
   end
 
   after do
+    Object.send(:remove_const, :C)
     Object.send(:remove_const, :B)
     Object.send(:remove_const, :A)
   end
@@ -67,10 +77,19 @@ describe Benchmark do
     it "sets up TimeLogger and redirects call to original method" do
       t = TimeLogger.new
       @Benchmark.instance_variable_set(:@time_logger, t)
-      t.should_receive(:start_event).with('<B>.test(1, 2)').and_return 56
+      t.should_receive(:start_event).with('B <B>.test(1, 2)').and_return 56
       t.should_receive(:stop_event).with(56)
       @Benchmark.for_method(B, :test)
       B.new.test(1,2)
+    end
+
+    it "sets label to 'ClassName 0xADDR' if inspect of benchmarked object provides non customized ouput" do
+      t = TimeLogger.new
+      @Benchmark.instance_variable_set(:@time_logger, t)
+      t.should_receive(:start_event).with('C 0x1337.test(1, 2)')
+      t.stub!(:stop_event)
+      @Benchmark.for_method(C, :test)
+      C.new.test(1,2)
     end
 
     it "forwards result of original method to sender" do

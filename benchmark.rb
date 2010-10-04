@@ -1,5 +1,17 @@
 require File.dirname(__FILE__) + '/time_logger'
 
+class Object
+  def _benchmarker_inspect
+    m = inspect.match /\A#<\w+:(0x[0-9a-f]+)>/
+    if m
+      c_addr = m[1]
+      self.class.to_s << ' ' << c_addr
+    else
+      self.class.to_s << ' ' << self.inspect
+    end
+  end
+end
+
 class Benchmark
   @@Benchmarks = {}
 
@@ -17,7 +29,7 @@ class Benchmark
     klass.class_variable_set(:@@_time_logger, @time_logger)
     method_with_benchmark = %Q{
       def #{method + '_with_benchmark'}(*args, &blk)
-        e = @@_time_logger.start_event(inspect << ".#{method}(" << args.map{|x| x.inspect}.join(', ') << ')')
+        e = @@_time_logger.start_event(_benchmarker_inspect << ".#{method}(" << args.map{|x| x.inspect}.join(', ') << ')')
 
         r = #{method + '_without_benchmark'}(*args, &blk)
 
