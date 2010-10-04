@@ -71,7 +71,20 @@ describe TimeLogger do
       t.to_s.should == "0.000 001 first\n0.002 001 second\n"
     end
 
-    it "pads events if they are nested"
+    it "pads events if they are nested" do
+      #Time.should_receive(:now).and_return(@now)
+      #Time.should_receive(:now).and_return(@in_1_ms)
+      #Time.should_receive(:now).and_return(@in_2_ms)
+      #Time.should_receive(:now).and_return(@in_3_ms)
+
+      #t = @time_logger
+      #e1 = t.start_event('first')
+      #t.stop_event(e1)
+     #e2 = t.start_event('second')
+      #t.stop_event(e2)
+
+      #t.to_s.should == "0.000 001 first\n0.002 001 second\n"
+    end
   end
 
 end
