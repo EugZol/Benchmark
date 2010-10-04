@@ -72,18 +72,18 @@ describe TimeLogger do
     end
 
     it "pads events if they are nested" do
-      #Time.should_receive(:now).and_return(@now)
-      #Time.should_receive(:now).and_return(@in_1_ms)
-      #Time.should_receive(:now).and_return(@in_2_ms)
-      #Time.should_receive(:now).and_return(@in_3_ms)
+      Time.should_receive(:now).and_return(@now)
+      Time.should_receive(:now).and_return(@in_1_ms)
+      Time.should_receive(:now).and_return(@in_2_ms)
+      Time.should_receive(:now).and_return(@in_3_ms)
 
-      #t = @time_logger
-      #e1 = t.start_event('first')
-      #t.stop_event(e1)
-     #e2 = t.start_event('second')
-      #t.stop_event(e2)
+      t = @time_logger
+      e1 = t.start_event('first')
+      e2 = t.start_event('second')
+      t.stop_event(e2)
+      t.stop_event(e1)
 
-      #t.to_s.should == "0.000 001 first\n0.002 001 second\n"
+      t.to_s.should == "0.000 003 first\n  0.001 001 second\n"
     end
   end
 
