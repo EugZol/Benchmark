@@ -27,9 +27,16 @@ describe Benchmark do
       def test(*args)
       end
     end
+
+    class D
+      def to_s
+        "It's D"
+      end
+    end
   end
 
   after do
+    Object.send(:remove_const, :D)
     Object.send(:remove_const, :C)
     Object.send(:remove_const, :B)
     Object.send(:remove_const, :A)
@@ -65,13 +72,18 @@ describe Benchmark do
       @benchmark.should_receive(:for_method).with(B, :some_method)
       @benchmark.for(B, :some_method)
     end
+
+    it "works fine when benchmarking classes with #to_s method" do
+      @benchmark.for(D, :to_s)
+      lambda{D.new.to_s.should == "It's D"}.should_not raise_error
+    end
   end
 
   describe 'for_method' do
     it "creates _with_benchmark method chain" do
       B.should_receive(:alias_method).with("test_without_benchmark", "test")
       B.should_receive(:alias_method).with("test", "test_with_benchmark")
-      @benchmark.for_method(B, :test)
+      @benchmark.send(:for_method, B, :test)
     end
 
     it "sets up TimeLogger and redirects call to original method" do
@@ -79,7 +91,7 @@ describe Benchmark do
       @benchmark.instance_variable_set(:@time_logger, t)
       t.should_receive(:start_event).with('B <B>.test(1, 2)').and_return 56
       t.should_receive(:stop_event).with(56)
-      @benchmark.for_method(B, :test)
+      @benchmark.send(:for_method, B, :test)
       B.new.test(1,2)
     end
 
@@ -88,13 +100,20 @@ describe Benchmark do
       @benchmark.instance_variable_set(:@time_logger, t)
       t.should_receive(:start_event).with('C 0x1337.test(1, 2)')
       t.stub!(:stop_event)
-      @benchmark.for_method(C, :test)
+      @benchmark.send(:for_method, C, :test)
       C.new.test(1,2)
     end
 
     it "forwards result of original method to sender" do
-      @benchmark.for_method(B, :test)
+      @benchmark.send(:for_method, B, :test)
       B.new.test(1,2).should == :test
+    end
+
+    it "do nothing if it's been called with arguments provided once before" do
+      Module.send(:alias_method, :original_class_eval, :class_eval)
+      C.should_receive(:class_eval).once.and_return{|x| C.original_class_eval(x)}
+      @benchmark.send(:for_method, C, :test)
+      @benchmark.send(:for_method, C, :test)
     end
   end
   

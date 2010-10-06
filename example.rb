@@ -12,7 +12,10 @@ class A
   def sql(n)
     sleep(0.02)
     Kernel.rand(n)
-  end 
+  end
+  def to_s
+    "just A"
+  end
 end
 
 b = Benchmark.instance(:general)
