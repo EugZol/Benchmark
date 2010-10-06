@@ -101,7 +101,7 @@ describe Benchmark do
   it 'delegates to_s to time_logger' do
     t = TimeLogger.new
     @benchmark.instance_variable_set(:@time_logger, t)
-    t.should_receive(:to_s)
+    t.should_receive(:to_s).and_return 'test'
     @benchmark.to_s
   end
 end
