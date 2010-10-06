@@ -2,7 +2,7 @@ require File.dirname(__FILE__) + "/../benchmark"
 
 describe Benchmark do
   before do
-    @Benchmark = Benchmark.new
+    @benchmark = Benchmark.new
     class A
       def parent_method
         :parent_method
@@ -57,13 +57,13 @@ describe Benchmark do
 
   describe 'for' do
     it "calls for_method for all instance method of class (no method provided in args)" do
-      @Benchmark.should_receive(:for_method).with(B, :test)
-      @Benchmark.for(B)
+      @benchmark.should_receive(:for_method).with(B, :test)
+      @benchmark.for(B)
     end
 
     it "calls for_method for provided method of class" do
-      @Benchmark.should_receive(:for_method).with(B, :some_method)
-      @Benchmark.for(B, :some_method)
+      @benchmark.should_receive(:for_method).with(B, :some_method)
+      @benchmark.for(B, :some_method)
     end
   end
 
@@ -71,38 +71,38 @@ describe Benchmark do
     it "creates _with_benchmark method chain" do
       B.should_receive(:alias_method).with("test_without_benchmark", "test")
       B.should_receive(:alias_method).with("test", "test_with_benchmark")
-      @Benchmark.for_method(B, :test)
+      @benchmark.for_method(B, :test)
     end
 
     it "sets up TimeLogger and redirects call to original method" do
       t = TimeLogger.new
-      @Benchmark.instance_variable_set(:@time_logger, t)
+      @benchmark.instance_variable_set(:@time_logger, t)
       t.should_receive(:start_event).with('B <B>.test(1, 2)').and_return 56
       t.should_receive(:stop_event).with(56)
-      @Benchmark.for_method(B, :test)
+      @benchmark.for_method(B, :test)
       B.new.test(1,2)
     end
 
     it "sets label to 'ClassName 0xADDR' if inspect of benchmarked object provides non customized ouput" do
       t = TimeLogger.new
-      @Benchmark.instance_variable_set(:@time_logger, t)
+      @benchmark.instance_variable_set(:@time_logger, t)
       t.should_receive(:start_event).with('C 0x1337.test(1, 2)')
       t.stub!(:stop_event)
-      @Benchmark.for_method(C, :test)
+      @benchmark.for_method(C, :test)
       C.new.test(1,2)
     end
 
     it "forwards result of original method to sender" do
-      @Benchmark.for_method(B, :test)
+      @benchmark.for_method(B, :test)
       B.new.test(1,2).should == :test
     end
   end
   
   it 'delegates to_s to time_logger' do
     t = TimeLogger.new
-    @Benchmark.instance_variable_set(:@time_logger, t)
+    @benchmark.instance_variable_set(:@time_logger, t)
     t.should_receive(:to_s)
-    @Benchmark.to_s
+    @benchmark.to_s
   end
 end
 

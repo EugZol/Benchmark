@@ -13,10 +13,10 @@ class Object
 end
 
 class Benchmark
-  @@Benchmarks = {}
+  @@benchmarks = {}
 
   def self.instance(key)
-    @@Benchmarks[key] ||= new
+    @@benchmarks[key] ||= new
   end
 
   def initialize
